@@ -71,6 +71,25 @@ echo -e "docker and k8tis installation complete";
 	# echo -e "install Slack Beta";
 	# https://slack.com/downloads/instructions/ubuntu
 
-
-
-
+# install Odoo dependencies
+	echo -e "install Odoo dependencies";
+		sudo sh -c 'echo "deb http://archive.getdeb.net/ubuntu $(lsb_release -sc)-getdeb apps" >> 	/etc/apt/sources.list.d/getdeb.list';
+		wget -q -O - http://archive.getdeb.net/getdeb-archive.key | sudo apt-key add -;
+		sudo apt update;
+		sudo apt install pycharm;
+		sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt/ `lsb_release -cs`-pgdg main" >> /etc/apt/sources.list.d/pgdg.list';
+		wget -q https://www.postgresql.org/media/keys/ACCC4CF8.asc -O - | sudo apt-key add -;
+		sudo apt-get update;
+		sudo apt-get install postgresql postgresql-contrib;
+		sudo apt-get install python-dateutil python-docutils python-feedparser python-jinja2 python-ldap python-libxslt1
+			python-lxml python-mako python-mock python-openid python-psycopg2 python-psutil python-pybabel python
+			pychart python-pydot python-pyparsing python-reportlab python-simplejson python-tz python-unittest2 python
+			vatnumber python-vobject python-webdav python-werkzeug python-xlwt python-yaml python-zsi poppler
+			utils python-pip python-pyPdf python-passlib python-decorator -y;
+		sudo apt-get install gcc python-dev mc bzr python-setuptools python-babel python-feedparser python-reportlab-accel
+			python-zsi python-openssl python-egenix-mxdatetime python-jinja2 python-unittest2 python-mock python-docutils
+			lptools make python-psutil python-paramiko poppler-utils python-pdftools antiword -y;
+		sudo curl -sL https://deb.nodesource.com/setup_4.x | sudo -E bash -;
+		sudo apt install -y nodejs;
+		sudo apt install -y npm;
+		sudo npm install -g less less-plugin-clean-css
