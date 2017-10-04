@@ -3,6 +3,7 @@ echo -e "general installation";
 sudo apt-get update;
 sudo apt-get upgrade -y;
 sudo apt install curl -y;
+sudo apt-get install python-pip;
 sudo add-apt-repository ppa:ubuntu-desktop/ubuntu-make;
 sudo apt install ubuntu-make;
 
@@ -71,7 +72,7 @@ echo -e "docker and k8tis installation complete";
 	# echo -e "install Slack Beta";
 	# https://slack.com/downloads/instructions/ubuntu
 
-# install Odoo dependencies
+# install Odoo dependencies (https://www.cybrosys.com/blog/how-to-configure-pycharm-for-odoo-development-in-ubuntu)
 	echo -e "install Odoo dependencies";
 		sudo sh -c 'echo "deb http://archive.getdeb.net/ubuntu $(lsb_release -sc)-getdeb apps" >> 	/etc/apt/sources.list.d/getdeb.list';
 		wget -q -O - http://archive.getdeb.net/getdeb-archive.key | sudo apt-key add -;
@@ -92,4 +93,20 @@ echo -e "docker and k8tis installation complete";
 		sudo curl -sL https://deb.nodesource.com/setup_4.x | sudo -E bash -;
 		sudo apt install -y nodejs;
 		sudo apt install -y npm;
-		sudo npm install -g less less-plugin-clean-css
+		sudo npm install -g less less-plugin-clean-css;
+		sudo apt-get install python-werkzeug -y;
+		sudo apt-get install python-lxml -y;
+		pip2 install passlib;
+		sudo apt-get install python-geoip;
+		pip2 install decorator;
+		pip2 install python-dateutil;
+		pip2 install psycopg2;
+		pip2 install pyyaml;
+		pip2 install image;
+		pip2 install Python-Chart;
+		pip2 install reportlab;
+		pip2 install prettytable Mako pyaml dateutils --upgrade;
+		pip2 install psutil;
+		pip2 install jinja2;
+		sudo apt-get install python-docutils;
+		pip2 install mock
