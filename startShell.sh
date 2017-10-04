@@ -71,6 +71,10 @@ echo -e "docker and k8tis installation complete";
 	# Slack Beta
 	# echo -e "install Slack Beta";
 	# https://slack.com/downloads/instructions/ubuntu
+	
+# install Django and dependencies	
+	pip install django
+	pip install django-autocomplete-light
 
 # install Odoo dependencies (https://www.cybrosys.com/blog/how-to-configure-pycharm-for-odoo-development-in-ubuntu)
 	echo -e "install Odoo dependencies";
@@ -110,3 +114,5 @@ echo -e "docker and k8tis installation complete";
 		pip2 install jinja2;
 		sudo apt-get install python-docutils;
 		pip2 install mock
+
+
