@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data noupdate="1">
+		<record id="default_workorder_dashboard" model="mrp.graph.kanban">
+			<field name="name">Work Orders Dashboard</field>
+		</record>
+	</data>
+</openerp>

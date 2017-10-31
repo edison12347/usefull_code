@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+  		<record id="mrp_dashboard_kanban_view" model="ir.ui.view">
+        	<field name="name">dashboard.kanban</field>
+        	<field name="model">mrp.graph.kanban</field>
+        	<field name="arch" type="xml">
+            	<kanban class="oe_background_grey" create="0">
+            		<field name="id"/>
+            		<field name="name"/>
+            		<templates>
+            			<t t-name="kanban-box">
+            				<div t-attf-class="oe_kanban_color_#{kanban_getcolor(3)} oe_kanban_card oe_kanban_invoice">
+	            				<t t-value="record.id" t-set="id_graph"/>
+	            				<t t-call="DashBoardTop"/>
+	            				<div class="o_kanban_card_content o_visible">
+                                	<div class="row">
+                                		<t t-call="DashBoardBody"/>
+                                	</div>
+                                	<t t-call="DashBoardBodyGraph"/>
+                                </div>
+	            			</div>
+            			</t>
+            			<t t-name="DashBoardTop">
+	                        <div class="o_kanban_card_header">
+	                            <div class="o_kanban_card_header_title">
+	                                <h4 class="text-center">
+	                                    <strong><field name="name"/></strong>
+	                                </h4>
+	                            </div>
+	                        </div>
+                    	</t>
+                    	<t t-name="DashBoardBody">
+                        	<div class="col-xs-5 o_kanban_primary_left">
+	                            <button type="object" name="action_create_new" class="btn btn-sm">
+									<span>New WorkOrder</span>
+	                            </button>
+	                        </div>
+	                    </t>
+                    	<t t-name="DashBoardBodyGraph">
+	                        <div class="o_kanban_graph_section">
+
+	                            <field name="kanban_dashboard_graph" widget="kanban_graph"/>
+	                        </div>
+	                    </t>
+            		</templates>
+            	</kanban>
+            </field>
+        </record>
+
+        <record id="mrp_dashboard_form_view" model="ir.ui.view">
+        	<field name="name">dashboard.form</field>
+        	<field name="model">mrp.graph.kanban</field>
+        	<field name="arch" type="xml">
+        		<form>
+        			<field name="name"/>
+        			<field name="kanban_dashboard_graph"/>
+        		</form>
+        	</field>
+        </record>
+
+	  	<record id="open_mrp_workorder_line_kanban" model="ir.actions.act_window">
+	        <field name="name">Dashboard</field>
+	        <field name="res_model">mrp.graph.kanban</field>
+	        <field name="view_type">form</field>
+	        <field name="view_mode">kanban,form</field>
+	    </record>
+
+	    <menuitem id="menu_board_mrp" name="MRP Dashboard" parent="base.menu_mrp_root" sequence="0"/>
+	    <menuitem id="submenu_board_mrp" name="Dashboard" action="open_mrp_workorder_line_kanban" parent="menu_board_mrp" sequence="1"/>
+
+	</data>
+</openerp>

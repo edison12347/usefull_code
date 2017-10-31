@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+		<record id="hr_job_limit_access_exclude_followers" model="ir.rule">
+	        <field name="name">HR private Job limit exclude followers</field>
+	        <field name="model_id" ref="hr.model_hr_job"/>
+	        <field name="domain_force">['|',('message_follower_ids', 'in', [user.partner_id.id] ), ('private','=',False )]</field>
+	        <field name="perm_read" eval="True"/>
+	        <field name="perm_write" eval="True"/>
+	        <field name="perm_unlink" eval="True"/>
+	        <field name="perm_create" eval="True"/>
+	        <field name="groups" eval="[(6,0,[ref('hr_recrut_groups.hr_recruter_group'),
+	        								ref('hr_recrut_groups.hr_initiator_group'),
+	        								ref('base.group_hr_user')])]"/>
+	    </record>
+
+    </data>
+</openerp>
