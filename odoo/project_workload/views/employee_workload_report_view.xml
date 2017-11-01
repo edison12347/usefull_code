@@ -132,10 +132,10 @@
             <field name="view_mode">kanban,tree</field>
             <field name="search_view_id" ref="view_workload_filter"/>
             <field name="view_ids" eval="[
-								 (5, 0, 0),
-								 (0, 0, {'view_mode': 'kanban', 'view_id': ref('workload_kanban_view')}),
-								 (0, 0, {'view_mode': 'tree', 'view_id': ref('workload_tree_view')}),
-								 ]"/>
+                                 (5, 0, 0),
+                                 (0, 0, {'view_mode': 'kanban', 'view_id': ref('workload_kanban_view')}),
+                                 (0, 0, {'view_mode': 'tree', 'view_id': ref('workload_tree_view')}),
+                                 ]"/>
         </record>
 
 
@@ -143,7 +143,7 @@
             model="hr.employee"
             report_type="qweb-pdf"
             string="Employee Workload Report"
-            name="workload_in_project.report_employee_workload"
+            name="project_workload.report_employee_workload"
             file="workload_in_project.report_employee_workload"/>
 
         <record id="project_workload_button" model="ir.ui.view">
@@ -156,18 +156,19 @@
                     <button class="oe_inline oe_stat_button" type="object"
                             icon="fa fa-tachometer"
                             name="employee_project_filter"
-                            string="Workload">
-                    </button>
+                            string="Workload"
+                            groups="project.group_project_manager"
+                            />
                 </xpath>
             </field>
         </record>
 
         <menuitem name="Report" parent="project.menu_project_management" id="workload_report" sequence="5"/>
-        <menuitem name="Wokrload" parent="base.menu_main_pm" id="menu_project_workload" sequence="2"/>
+        <menuitem name="Wokrload" parent="base.menu_main_pm" id="menu_project_workload" groups="project.group_project_manager" sequence="2"/>
         <menuitem name="Employee Wokrload" parent="menu_project_workload" id="menu_project_workload_employees" action="project_action_workload" sequence="1"/>
         <menuitem name="Workload Report" parent="menu_project_workload" id="employee_workload_report" action="wizard_workload_report_act" sequence="2"/>
 
-        <menuitem name="Wokrload" parent="base.menu_main_pm" id="menu_project_workload" sequence="2"/>
+        <menuitem name="Wokrload" parent="base.menu_main_pm" id="menu_project_workload" groups="project.group_project_manager" sequence="2"/>
         <menuitem name="Employee Wokrload" parent="menu_project_workload" id="menu_project_workload_employees" action="project_action_workload" sequence="1"/>
         <menuitem name="Workload Report" parent="menu_project_workload" id="employee_workload_report" action="wizard_workload_report_act" sequence="2"/>
 
