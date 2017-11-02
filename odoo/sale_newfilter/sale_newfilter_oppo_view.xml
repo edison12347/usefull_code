@@ -1,0 +1,140 @@
+<?xml version="1.0" ?>
+
+<openerp>
+    <data>
+        <record id="sale_newfilter_oppo_search_view" model="ir.ui.view">
+            <field name="name">CRM - Opportunities Search</field>
+            <field name="model">crm.lead</field>
+            <field name="inherit_id" ref="crm.view_crm_case_opportunities_filter"></field>
+            <field name="arch" type="xml">
+            	<xpath expr="//filter[@string='New']" position="before">
+            		<filter string="Active" name="active" domain="[('stage_id.name', 'not in', ['Spam','Archive','CV','Partner','Lost'])]" help="Show only active opportunity (not Lost or Won)"/>
+            	</xpath>
+                <xpath expr="//filter[@string='New Mail']" position="replace">
+                    <filter name="30-days" string="30 days" domain="[('create_date', '!=', False), ('create_date', '&lt;=', context_today().strftime('%Y-%m-%d')), ('create_date', '&gt;=', (context_today() - datetime.timedelta(days=30)).strftime('%Y-%m-%d') )]" help="Show only opportunity"/>
+                    <filter name="60-days" string="60 days" domain="[('create_date', '!=', False), ('create_date', '&lt;=', context_today().strftime('%Y-%m-%d')), ('create_date', '&gt;=', (context_today() - datetime.timedelta(days=60)).strftime('%Y-%m-%d') )]" help="Show only opportunity"/>
+                    <filter name="90-days" string="90 days" domain="[('create_date', '!=', False), ('create_date', '&lt;=', context_today().strftime('%Y-%m-%d')), ('create_date', '&gt;=', (context_today() - datetime.timedelta(days=90)).strftime('%Y-%m-%d') )]" help="Show only opportunity"/>
+                </xpath>
+                <xpath expr="//filter[@string='Stage']" position="before">
+                    <filter string="Company" context="{'group_by':'company_id'}" />
+                </xpath>
+                <xpath expr="//filter[@string='Expected Closing']" position="attributes">
+                    <attribute name="invisible">True</attribute>
+                </xpath>
+                <xpath expr="//group[@string='Group By']" position="inside">
+                    <filter string="Industry" name="industry" context="{'group_by':'industry'}"/>
+                </xpath>
+                <xpath expr="//filter[@string='Expected Closing']" position="before">
+                    <filter string="Last Message" name="group_message_last_post" domain="[]" context="{'group_by':'message_last_post:week'}"/>
+                </xpath>
+
+            </field>
+        </record>
+        <record id="sale_newfilter_oppo_tree_view" model="ir.ui.view">
+            <field name="name">CRM - Opportunities Tree</field>
+            <field name="model">crm.lead</field>
+            <field name="inherit_id" ref="crm.crm_case_tree_view_oppor"></field>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='section_id']" position="replace">
+                </xpath>
+                <xpath expr="//field[@name='user_id']" position="replace">
+                </xpath>
+                <xpath expr="//field[@name='stage_id']" position="replace">
+                </xpath>
+                <xpath expr="//field[@name='planned_revenue']" position="replace">
+                </xpath>
+                <xpath expr="//field[@name='probability']" position="replace">
+                </xpath>
+                <xpath expr="//field[@name='create_date']" position="after">
+                    <field name="stage_id"/>
+                    <field name="user_id"/>
+                </xpath>
+                <xpath expr="//field[@name='write_date']" position="after">
+                    <field name="message_last_post"/>
+                </xpath>
+                <xpath expr="//field[@name='country_id']" position="after">
+                    <field name="planned_revenue" sum="Expected Revenues"/>
+                    <field name="probability" avg="Avg. of Probability"/>
+                </xpath>
+            </field>
+        </record>
+         <record id="sale_newfilter_oppo_form_view" model="ir.ui.view">
+            <field name="name">CRM - Opportunities Form</field>
+            <field name="model">crm.lead</field>
+            <field name="inherit_id" ref="crm.crm_case_form_view_oppor"></field>
+            <field name="arch" type="xml">
+                <data>
+                    <xpath expr="//button[@name='case_mark_lost']" position="attributes">
+                        <attribute name="attrs">{'invisible': [('probability', '=', 0)]}</attribute>
+                    </xpath>
+                     <xpath expr="//button[@name='case_mark_won']" position="attributes">
+                        <attribute name="attrs">{'invisible': ['|',('probability', '=', 100),('probability', '=', 0)]}</attribute>
+                    </xpath>
+                    <xpath expr="//field[@name='priority']" position="after">
+                        <field name="crm_nda"/>
+                        <field name="user_id2"/>
+                    </xpath>
+                    <xpath expr="//field[@name='categ_ids']" position="after">
+                        <field name="industry"/>
+                    </xpath>
+                    <xpath expr="//field[@name='categ_ids']" position="attributes">
+                        <attribute name="string">Technology Tag</attribute>
+                    </xpath>
+                </data>
+            </field>
+        </record>
+        <record id="sale_newfilter_lead_kanban_view" model="ir.ui.view">
+            <field name="name">CRM - Leads Kanban</field>
+            <field name="model">crm.lead</field>
+            <field name="inherit_id" ref="crm.crm_case_kanban_view_leads"></field>
+            <field name="arch" type="xml">
+                <field name="stage_id" position="after">
+                    <field name="type"/>
+                </field>
+                
+                <field name="name" position="replace">
+                    <t t-if="record.type.raw_value == 'opportunity'">
+                        <a t-attf-href="#id=#{record.id.value}&amp;view_type=form&amp;model=crm.lead&amp;action=%(crm.crm_case_category_act_oppor11)d" onclick="if( event.which == 2 ) { event.stopPropagation(); }">
+                            <field name="name"></field>
+                        </a>
+                        <br/>
+                    </t>
+                    <t t-if="record.type.raw_value == 'lead'">
+                        <a t-attf-href="#id=#{record.id.value}&amp;view_type=form&amp;model=crm.lead&amp;action=%(crm.crm_case_category_act_leads_all)d" onclick="if( event.which == 2 ) { event.stopPropagation(); }">
+                            <field name="name"></field>
+                        </a>
+                        <br/>
+                    </t>
+            </field>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="crm_case_category_act_leads_opps">
+            <field name="name">Leads</field>
+            <field name="res_model">crm.lead</field>
+            <field name="view_mode">tree,kanban,form</field>
+            <field name="view_id" ref="crm.crm_case_tree_view_leads"/>
+            <field name="search_view_id" ref="crm.view_crm_case_leads_filter"/>
+            <field name="context">{
+                    'needaction_menu_ref': 'crm.menu_crm_opportunities',
+                    'search_default_my_leads':1,
+                }
+            </field>
+            <field name="help" type="html">
+                <p>
+                    Use leads if you need a qualification step before creating an
+                    opportunity or a customer. It can be a business card you received,
+                    a contact form filled in your website, or a file of unqualified
+                    prospects you import, etc.
+                </p><p>
+                    Once qualified, the lead can be converted into a business
+                    opportunity and/or a new customer in your address book.
+                </p>
+            </field>
+        </record>
+
+
+        <menuitem name="Leads and Opportunities" id="menu_crm_leads_opps" parent="base.menu_sales" sequence="3"
+            action="crm_case_category_act_leads_opps"/>
+    </data>
+</openerp>

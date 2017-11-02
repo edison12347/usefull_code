@@ -1,0 +1,17 @@
+<?xml version="1.0" ?>
+
+<openerp>
+    <data>
+    	<record id="sale_newfilter_lead_convert_wizard" model="ir.ui.view">
+            <field name="name">Convert Wizard Inh</field>
+            <field name="model">crm.lead2opportunity.partner</field>
+            <field name="inherit_id" ref="crm.view_crm_lead2opportunity_partner"></field>
+            <field name="arch" type="xml">
+            	<xpath expr="//field[@name='name']" position="attributes">
+            		<attribute name="readonly">False</attribute>
+            	</xpath>
+            </field>
+
+        </record>
+    </data>
+</openerp>

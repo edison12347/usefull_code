@@ -1,0 +1,56 @@
+<?xml version="1.0" ?>
+<openerp>
+	<data>
+
+	    <record model="ir.actions.act_window" id="sale_newfilter_case_category_act_leads">
+	        <field name="name">Leads</field>
+	        <field name="res_model">crm.lead</field>
+	        <field name="view_mode">tree,form</field>
+	        <field name="domain">[('type','=','lead')]</field>
+	        <field name="context">{
+	                'stage_type': 'lead',
+	                'default_type': 'lead',
+	                'default_user_id': uid
+	            }
+	        </field>
+	        <field name="view_id" eval="False"/>
+	    </record>
+
+		<record id="view_partners_form_crm2" model="ir.ui.view">
+            <field name="name">view.res.partner.form.crm.inherited2</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field eval="18" name="priority"/>
+            <field name="arch" type="xml">
+                <data>
+                    <xpath expr="//button[@name='%(crm.crm_case_category_act_oppor11)d']" position="inside">
+                        <button class="oe_inline oe_stat_button" type="action"
+                            attrs="{'invisible': [('customer', '=', False)]}"
+                            name="%(sale_newfilter_case_category_act_leads)d"
+                            icon="fa-star"
+                            context="{'search_default_partner_id': active_id}">
+                            <field string="Leads" name="lead_count" widget="statinfo"/>
+                        </button>
+                    </xpath>
+                </data>
+            </field>
+        </record>
+
+
+        <record id="view_partners_search_crm1" model="ir.ui.view">
+            <field name="name">view.res.partner.filter.inherited</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_res_partner_filter"/>
+            <field eval="18" name="priority"/>
+            <field name="arch" type="xml">
+                <data>
+                    <xpath expr="//filter[@name='supplier']" position="before">
+                        <filter name="customer_with_opportunity" string="Customers with opportunities" domain="[('opportunity_count', '=', 0)]"/>
+                        <filter name="customer_with_opportunity_won" string="Customers with won opportunities" domain="[('opportunity_ids.stage_id.name', '=', 'Won')]"/>
+                        <filter string="Customer with Lost opps" name="lost_opp_customers" domain="[('opportunity_ids.stage_id.name', '=', 'Lost')]"/>
+                    </xpath>
+                </data>
+            </field>
+        </record>
+	</data>
+</openerp>

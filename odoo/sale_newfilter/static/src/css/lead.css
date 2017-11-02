@@ -1,0 +1,17 @@
+/*.custom [width="1"] {
+	width:30px;
+}
+.custom [data-field="description"] {
+	width: 300px;
+	height:30px;
+	white-space: nowrap!important;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+.custom [data-id="description"] {
+	width: 300px;
+	height:30px;
+}
+.custom table{
+	table-layout: fixed;
+}*/

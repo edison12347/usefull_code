@@ -1,0 +1,145 @@
+<?xml version="1.0" ?>
+
+<openerp>
+    <data>
+        <template id="custom_class" name="website assets for sale newfilter" inherit_id="web.assets_backend">
+            <xpath expr="." position="inside">
+                <link rel="stylesheet" href="/sale_newfilter/static/src/css/lead.css"/>
+            </xpath>
+        </template>
+    	<record id="sale_newfilter_lead_search_view" model="ir.ui.view">
+            <field name="name">CRM - Leads Search</field>
+            <field name="model">crm.lead</field>
+            <field name="inherit_id" ref="crm.view_crm_case_leads_filter"></field>
+            <field name="arch" type="xml">
+                <xpath expr="//filter[@string='My Leads']" position="before">
+                    <filter string="Active" name="active" domain="[('stage_id.name', 'not in', ['Spam','Archive','CV','Partner'])]" help="Show only active lead"/>
+                </xpath>
+        		<xpath expr="//filter[@string='Available for mass mailing']" position="replace">
+				</xpath>
+                <xpath expr="//filter[@name='message_unread']" position="replace">
+                    <filter name="30-days" string="30 days" domain="[('create_date', '!=', False), ('create_date', '&lt;=', context_today().strftime('%Y-%m-%d')), ('create_date', '&gt;=', (context_today() - datetime.timedelta(days=30)).strftime('%Y-%m-%d') )]" help="Show only opportunity"/>
+                    <filter name="60-days" string="60 days" domain="[('create_date', '!=', False), ('create_date', '&lt;=', context_today().strftime('%Y-%m-%d')), ('create_date', '&gt;=', (context_today() - datetime.timedelta(days=60)).strftime('%Y-%m-%d') )]" help="Show only opportunity"/>
+                    <filter name="90-days" string="90 days" domain="[('create_date', '!=', False), ('create_date', '&lt;=', context_today().strftime('%Y-%m-%d')), ('create_date', '&gt;=', (context_today() - datetime.timedelta(days=90)).strftime('%Y-%m-%d') )]" help="Show only opportunity"/>
+                </xpath>
+                <xpath expr="//filter[@string='My Leads']" position="attributes">
+                    <attribute name="name">my_leads</attribute>
+                </xpath>
+                <xpath expr="//group[@string='Group By']" position="inside">
+                    <filter string="Industry" name="industry" context="{'group_by':'industry'}"/>
+                </xpath>
+                <xpath expr="//group[@string='Group By']" position="after">
+                    <group expand="0" string="Lead Type" colspan="16">
+                        <filter string="Type" name="type" domain="[]" context="{'group_by':'type'}"/>
+                    </group>
+                </xpath>
+            </field>
+        </record>
+        <record id="sale_newfilter_lead_tree_view" model="ir.ui.view">
+            <field name="name">CRM - Leads Tree</field>
+            <field name="model">crm.lead</field>
+            <field name="inherit_id" ref="crm.crm_case_tree_view_leads"></field>
+            <field name="arch" type="xml">
+                <tree position="attributes">
+                    <attribute name="class">custom</attribute>
+                    <attribute name="default_order">create_date</attribute>
+                </tree>
+                <xpath expr="//field[@name='section_id']" position="replace">
+                </xpath>
+                <xpath expr="//field[@name='user_id']" position="replace">
+                </xpath>
+                <xpath expr="//field[@name='stage_id']" position="replace">
+                </xpath>
+                <xpath expr="//field[@name='create_date']" position="after">
+                    <field name="stage_id"/>
+                    <field name="user_id"/>
+                </xpath>
+                <xpath expr="//field[@name='message_unread']" position="after">
+                    <field name="message_last_post"/>
+                </xpath>
+                <xpath expr="//field[@name='name']" position="after">
+                    <field  name="description" string="Message" widget="monetary"/>
+                </xpath>
+
+            </field>
+        </record>
+
+        <record id="sale_newfilter_lead_description_field" model="ir.ui.view">
+            <field name="name">CRM - Description Field</field>
+            <field name="model">crm.lead</field>
+            <field name="inherit_id" ref="crm.crm_case_form_view_leads"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='description']" position="replace">
+                    <field name="description" string="Message" widget="html"/>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="sale_newfilter_lead_form_view" model="ir.ui.view">
+            <field name="name">CRM - Leads</field>
+            <field name="model">crm.lead</field>
+            <field name="inherit_id" ref="crm.crm_case_form_view_leads"></field>
+            <field name="arch" type="xml">
+                <data>
+                    <!--xpath expr="//field[@name='categ_ids']" position="after">
+                        <field name="lead_type_ids" widget="many2many_tags"/>
+                    </xpath-->
+                    <xpath expr="//field[@name='user_id']" position="after">
+                        <field name="lead_type_ids" widget="many2many_tags" options="{'no_create_edit': True}"/>
+                        <field name="user_id2"/>
+                        <field name="crm_nda"/>
+                    </xpath>
+                    <xpath expr="//field[@name='categ_ids']" position="after">
+                        <field name="industry"/>
+                    </xpath>
+                    <xpath expr="//field[@name='categ_ids']" position="attributes">
+                        <attribute name="string">Technology Tag</attribute>
+                    </xpath>
+                </data>
+            </field>
+        </record>
+
+        <record id="sale_newfilter_marketing_lead_form_view" model="ir.ui.view">
+            <field name="name">CRM - Leads</field>
+            <field name="model">crm.lead</field>
+            <field name="inherit_id" ref="marketing_crm.view_crm_lead_form"></field>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='source_id']" position="attributes">
+                    <attribute name="required">True</attribute>
+                </xpath>
+            </field>
+        </record>
+
+    <record model="ir.actions.act_window" id="crm.crm_case_category_act_leads_all">
+        <field name="name">Leads</field>
+        <field name="res_model">crm.lead</field>
+        <field name="view_mode">tree,kanban,form</field>
+        <field name="domain">['|', ('type','=','lead'), ('type','=',False)]</field>
+        <field name="view_id" ref="crm.crm_case_tree_view_leads"/>
+        <field name="search_view_id" ref="crm.view_crm_case_leads_filter"/>
+        <field name="context">{
+                'default_type':'lead',
+                'stage_type':'lead',
+                'needaction_menu_ref': 'crm.menu_crm_opportunities',
+                'search_default_active':1,
+            }
+        </field>
+        <field name="help" type="html">
+            <p>
+                Use leads if you need a qualification step before creating an
+                opportunity or a customer. It can be a business card you received,
+                a contact form filled in your website, or a file of unqualified
+                prospects you import, etc.
+            </p><p>
+                Once qualified, the lead can be converted into a business
+                opportunity and/or a new customer in your address book.
+            </p>
+        </field>
+        <field name="view_ids" eval="[
+                 (5, 0, 0),
+                 (0, 0, {'view_mode': 'tree', 'view_id': ref('crm.crm_case_tree_view_leads')}),
+                 (0, 0, {'view_mode': 'kanban', 'view_id': ref('crm.crm_case_kanban_view_leads')}),
+                 ]"/>
+    </record>
+    </data>
+</openerp>

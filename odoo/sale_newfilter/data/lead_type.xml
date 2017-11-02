@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="crm_lead_type_sql" model="crm.lead.type">
+            <field name="name">SQL</field>
+        </record>
+        <record id="crm_lead_type_mql" model="crm.lead.type">
+            <field name="name">MQL</field>
+        </record>
+        <record id="crm_lead_type_sales_partners" model="crm.lead.type">
+            <field name="name">Sales Partners</field>
+        </record>
+        <record id="crm_lead_type_marketing_partners" model="crm.lead.type">
+            <field name="name">Marketing Partners</field>
+        </record>
+        <record id="crm_lead_type_qa_resources" model="crm.lead.type">
+            <field name="name">QA Resources</field>
+        </record>
+        <record id="crm_lead_type_software_development_resources" model="crm.lead.type">
+            <field name="name">Software Development Resources</field>
+        </record>
+    </data>
+</openerp>

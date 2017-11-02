@@ -1,0 +1,16 @@
+<?xml version="1.0" ?>
+<openerp>
+	<data>
+		<record id="view_crm_lead_report_analysis" model="ir.ui.view">
+            <field name="name">Lead Analysys</field>
+            <field name="model">crm.lead.report</field>
+            <field name="inherit_id" ref="crm.view_report_crm_lead_graph"/>
+            <field eval="18" name="priority"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='section_id']" position="replace">
+                	<field name="stage_id" type="row"/>
+                </xpath>
+            </field>
+        </record>
+	</data>
+</openerp>
