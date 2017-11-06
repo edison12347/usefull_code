@@ -1,11 +1,11 @@
 # Initial
 echo -e "general installation";
 sudo apt-get update;
-sudo apt-get upgrade -y;
-sudo apt install curl -y;
+sudo apt-get -y upgrade;
+sudo apt install -y curl;
 sudo apt-get install python-pip;
 sudo add-apt-repository ppa:ubuntu-desktop/ubuntu-make;
-sudo apt install ubuntu-make;
+sudo apt install -y ubuntu-make;
 
 # install Google Chrome browser
 echo -e "installing Google Chrome browser";
