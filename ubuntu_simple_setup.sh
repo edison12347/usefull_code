@@ -50,6 +50,7 @@ echo -e "installing docker and k8tis";
 	sudo apt-get install -y docker.io;
 	sudo groupadd docker;
 	sudo gpasswd -a $USER docker;
+	sudo apt install -y docker-compose
 	sudo docker volume create portainer_data
 	sudo docker run -d -p 9000:9000 -v /var/run/docker.sock:/var/run/docker.sock -v portainer_data:/data portainer/portainer;
 	# install Google SDK
@@ -62,6 +63,10 @@ echo -e "installing docker and k8tis";
 	echo "source <(kubectl completion bash)" >> ~/.bashrc;
 echo -e "docker and k8tis installation complete";
 
+# upgrade terminal\
+	echo -e "upgrade terminal";
+	sudo apt-get install zsh;
+	sh -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
 # install messaging apps
 	# Skype Beta
 	#echo -e "install Skype Beta";
