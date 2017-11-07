@@ -37,6 +37,7 @@ TODAY = datetime.today().date()
 class ResUsersInherit(models.Model):
     _inherit = 'res.users'
 
+    current_workload = fields.Integer(string='Current Workload', default=0)
     maximum_rate = fields.Integer(string='Maximum rate', default=100)
     users_workload_hrs = fields.Integer(string='Current Workload [hrs]')
     max_workload = fields.Integer(string='Maximum workload [hrs]')
@@ -123,48 +124,49 @@ class ResUsersInherit(models.Model):
                     else:
                         break
 
+    @api.one
     def _calc_workload(self):
         ir_values = self.env['ir.values']
         no_of_days = ir_values.get_default('project.config.settings', 'no_of_days')
         no_of_hrs = ir_values.get_default('project.config.settings', 'working_hr')
 
         # Look at the each user and select task within deadlines
-        for user in self.search([]):
-            if no_of_days == 0:
-                user.write({'maximum_rate': 100,
-                            'current_workload': 0})
-                break
-            else:
-                workload_boundary_date, no_of_days = self.determine_workload_timeframe(no_of_days)
+        _logger.info("!!!!!!! self++++++++++> %s", self)
 
-            users_workload_hrs = self.get_users_taskwork_hours(user, workload_boundary_date)
+        if no_of_days == 0:
+            self.write({'maximum_rate': 100,
+                        'current_workload': 0})
+        else:
+            workload_boundary_date, no_of_days = self.determine_workload_timeframe(no_of_days)
 
-            # Calculate users max load
-            employee = self.env['hr.employee'].search([('id', '=', user.id)])
-            if len(employee.calendar_id) != 0:  # If there is a schedule calculate max workload based on it
-                work_schedule = employee.calendar_id
-                max_workload, hours_in_weekday = self.calc_max_workload_calendar_based(work_schedule, no_of_days)
-                max_workload, hours_in_weekday = self.calc_workload_after_leaves(work_schedule,
-                                                                                 max_workload,
-                                                                                 workload_boundary_date,
-                                                                                 hours_in_weekday)
-            else:  # If there is no schedule use default values
-                max_workload = self.calc_standard_max_workload(no_of_days, no_of_hrs)
+        users_workload_hrs = self.get_users_taskwork_hours(self, workload_boundary_date)
 
-            workload_perc = (users_workload_hrs / max_workload) * 100
-            user.progress_rate = workload_perc
-            _logger.info("4444+++++++++++++before++++++++++ %s", user.id)
-            # user.write({'current_workload': workload_perc})
-            _logger.info("4444+++++++++++++after++++++++++")
-            user.users_workload_hrs = users_workload_hrs
-            user.max_workload = max_workload
-            _logger.info("4444+++++++++++++?????????++++++++++")
-        _logger.info("4444+++++++++++++999999999999999999999++++++++++")
+        # Calculate users max load
+        employee = self.env['hr.employee'].search([('id', '=', self.id)])
+        if len(employee.calendar_id) != 0:  # If there is a schedule calculate max workload based on it
+            work_schedule = employee.calendar_id
+            max_workload, hours_in_weekday = self.calc_max_workload_calendar_based(work_schedule, no_of_days)
+            max_workload, hours_in_weekday = self.calc_workload_after_leaves(work_schedule,
+                                                                             max_workload,
+                                                                             workload_boundary_date,
+                                                                             hours_in_weekday)
+        else:  # If there is no schedule use default values
+            max_workload = self.calc_standard_max_workload(no_of_days, no_of_hrs)
+
+        workload_perc = (users_workload_hrs / max_workload) * 100
+        self.progress_rate = workload_perc
+        self.current_workload = workload_perc
+        _logger.info("!!!!!!! BEFOREself.current_workload++++++++++> %s", self.current_workload)
+        self.write({'current_workload': workload_perc})
+        _logger.info("!!!!!!! AFTER self.current_workload++++++++++> %s", self.current_workload)
+        self.users_workload_hrs = users_workload_hrs
+
 
     def _empty_function(self):
         pass
 
     def _search_free_user(self, operator, value):
+        _logger.info('-----^^^^^^^^^^^-----')
         users_ids = self.env['res.users'].search([('current_workload', '=', 0)])
         _logger.info("4444+++++++++++++users_ids++++++++++> %s", users_ids)
         users_list = list(set([user.id for user in users_ids]))
@@ -184,7 +186,6 @@ class ResUsersInherit(models.Model):
         return [('id', 'in', user_list)]
 
     progress_rate = fields.Integer(string='Workload', compute=_calc_workload)
-    current_workload = fields.Integer(string='Current Workload')
     low_load = fields.Integer(string='Low Workload', compute=_empty_function, search="_search_free_user")
     overload = fields.Integer(string='Overload', compute=_empty_function, search="_search_overloaded_user")
     my_dep_filter = fields.Integer(string='Department filter', compute=_empty_function, search="_my_dep_filter")
