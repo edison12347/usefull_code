@@ -124,6 +124,11 @@ class ResUsersInherit(models.Model):
                     else:
                         break
 
+    def udate_workload(self, user, workload):
+        query = "UPDATE res_users SET current_workload = '" + str(int(workload)) + "' WHERE id = '" + str(user.id) + "';" 
+        _logger.info("!!!!!!! self++++++++++> %s", query)
+        self.env.cr.execute(query)
+
     @api.one
     def _calc_workload(self):
         ir_values = self.env['ir.values']
@@ -156,10 +161,11 @@ class ResUsersInherit(models.Model):
         workload_perc = (users_workload_hrs / max_workload) * 100
         self.progress_rate = workload_perc
         self.current_workload = workload_perc
-        _logger.info("!!!!!!! BEFOREself.current_workload++++++++++> %s", self.current_workload)
-        self.write({'current_workload': workload_perc})
+        self.udate_workload(self, workload_perc)
+        # self.write({'current_workload': workload_perc})
         _logger.info("!!!!!!! AFTER self.current_workload++++++++++> %s", self.current_workload)
         self.users_workload_hrs = users_workload_hrs
+        # STILL Error after function finishes and tires to render view
 
 
     def _empty_function(self):
