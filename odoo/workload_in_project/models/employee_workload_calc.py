@@ -59,7 +59,6 @@ class ResUsersInherit(models.Model):
                 "user_id = '" + str(user.id) + "'" + \
                 " AND date_deadline >= '" + datetime.today().date().strftime(DF) + "'" + \
                 " AND date_deadline <= '" + workload_boundary_date.date().strftime(DF) + "';"
-
         self.env.cr.execute(query)
         query_results = self.env.cr.fetchone()
         users_workload_hrs = 0 if query_results[0] is None else query_results[0]
@@ -126,7 +125,6 @@ class ResUsersInherit(models.Model):
 
     def udate_workload(self, user, workload):
         query = "UPDATE res_users SET current_workload = '" + str(int(workload)) + "' WHERE id = '" + str(user.id) + "';" 
-        _logger.info("!!!!!!! self++++++++++> %s", query)
         self.env.cr.execute(query)
 
     @api.one
@@ -136,11 +134,8 @@ class ResUsersInherit(models.Model):
         no_of_hrs = ir_values.get_default('project.config.settings', 'working_hr')
 
         # Look at the each user and select task within deadlines
-        _logger.info("!!!!!!! self++++++++++> %s", self)
-
-        if no_of_days == 0:
-            self.write({'maximum_rate': 100,
-                        'current_workload': 0})
+         if no_of_days == 0:
+            self.udate_workload(self, 0)
         else:
             workload_boundary_date, no_of_days = self.determine_workload_timeframe(no_of_days)
 
@@ -162,25 +157,19 @@ class ResUsersInherit(models.Model):
         self.progress_rate = workload_perc
         self.current_workload = workload_perc
         self.udate_workload(self, workload_perc)
-        # self.write({'current_workload': workload_perc})
-        _logger.info("!!!!!!! AFTER self.current_workload++++++++++> %s", self.current_workload)
         self.users_workload_hrs = users_workload_hrs
-        # STILL Error after function finishes and tires to render view
 
 
     def _empty_function(self):
         pass
 
     def _search_free_user(self, operator, value):
-        _logger.info('-----^^^^^^^^^^^-----')
         users_ids = self.env['res.users'].search([('current_workload', '=', 0)])
-        _logger.info("4444+++++++++++++users_ids++++++++++> %s", users_ids)
         users_list = list(set([user.id for user in users_ids]))
         return [('id', 'in', users_list)]
 
     def _search_overloaded_user(self, operator, value):
         users_ids = self.env['res.users'].search([('current_workload', '>', 100)])
-        _logger.info("5555+++++++++++++users_ids++++++++++> %s", users_ids)
         users_list = list(set([user.id for user in users_ids]))
         return [('id', 'in', users_list)]
 
