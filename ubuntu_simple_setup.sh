@@ -78,7 +78,10 @@ echo -e "docker and k8tis installation complete";
 	# Slack Beta
 	echo -e "install Slack Beta";
 	https://slack.com/downloads/instructions/ubuntu
-	
+# install Python related
+    sudo apt-get install python-dev   # for python2.x installs
+    sudo apt-get install python3-dev  # for python3.x installs
+
 # install Django and dependencies	
 	pip install django
 	pip install django-autocomplete-light
